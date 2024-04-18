@@ -89,7 +89,27 @@ int main(void)
   MX_GPIO_Init();
   MX_ADC_Init();
   MX_CAN_Init();
+
   /* USER CODE BEGIN 2 */
+
+  //Right Wheel Encoder
+  volatile uint8_t AR;
+  volatile uint8_t BR;
+  volatile uint8_t ZR;
+
+  //Left Wheel Encoder
+  volatile uint8_t AL;
+  volatile uint8_t BL;
+  volatile uint8_t ZL;
+
+  //Brake Pressure
+  volatile uint8_t brakeSwitch;
+
+  //Steering Angle
+  volatile uint8_t steeringPot;
+
+  //Throttle Position
+  volatile uint8_t throttlePot;
 
   /* USER CODE END 2 */
 
@@ -98,6 +118,16 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
+    //Poll Right Wheel Encoder
+    AR = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5);
+    BR = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6);
+    ZR = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7);
+
+    //Poll Left Wheel Encoder
+    AL = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_13); 
+    BL = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
+    ZL = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15);
 
     /* USER CODE BEGIN 3 */
   }
