@@ -1,25 +1,14 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    adc.h
-  * @brief   This file contains all the function prototypes for
-  *          the adc.c file
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
+  * @file    sensor.h
+  * @brief   This file provides code for the polling of sensors and conversion of units.
   ******************************************************************************
   */
 /* USER CODE END Header */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __ADC_H__
-#define __ADC_H__
+#ifndef __SENSOR_H__
+#define __SENSOR_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,13 +21,9 @@ extern "C" {
 
 /* USER CODE END Includes */
 
-extern ADC_HandleTypeDef hadc;
-
 /* USER CODE BEGIN Private defines */
-
+#define ENCODER_COUNT_PER_REV 2048
 /* USER CODE END Private defines */
-
-void MX_ADC_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 
@@ -47,6 +32,5 @@ void MX_ADC_Init(void);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* __ADC_H__ */
+#endif /*__SENSOR_H__ */
 
