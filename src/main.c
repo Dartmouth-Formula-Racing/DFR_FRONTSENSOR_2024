@@ -99,15 +99,18 @@ int main(void)
   MX_NVIC_Init();
 
   /* USER CODE BEGIN 2 */
+  ////////////////// Variables //////////////////
   //Uitlity
-  uint8_t lastTimeCount = HAL_GetTick();
+  uint32_t lastTimeCount = HAL_GetTick();
   uint8_t adcCounter = 0;
 
   //Right Wheel Encoder
-  uint16_t rightRpm;
+  uint16_t rightEncoderCount;
+  volatile uint16_t rightRpm;
 
   //Left Wheel Encoder
-  uint16_t leftRpm;
+  uint16_t leftEncoderCount;
+  volatile uint16_t leftRpm;
 
   //Brake Pressure
   uint8_t brakeBoolean;
@@ -131,7 +134,7 @@ int main(void)
       // Encoders
       rightRpm = encoderToRpm(rightEncoderCount, INTERVAL_MS);
       leftRpm = encoderToRpm(leftEncoderCount, INTERVAL_MS);
-
+      /*
       // Brake Pressure Switch
       brakeBoolean = pollBrake();
 
@@ -143,13 +146,16 @@ int main(void)
       adcCounter = !adcCounter;
 
       //////////// Send Data ////////////
+      // Prepare CAN message
+      CAN_TxHeaderTypeDef TxHeader;
+      uint8_t TxData[8];
+      uint32_t TxMailbox;
       //Send over CAN
-      
+      */
 
       lastTimeCount = HAL_GetTick();
     }
     /* USER CODE END WHILE */
-    HAL_GetTick();
 
     /* USER CODE BEGIN 3 */
   }

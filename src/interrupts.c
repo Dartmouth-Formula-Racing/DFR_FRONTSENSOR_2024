@@ -8,7 +8,7 @@
 #include "main.h"
 
 #define DIRECTION 1
-
+/*
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if(GPIO_Pin == GPIO_PIN_5) { // GPIO_PIN_5 =  AR Right Wheel
@@ -35,7 +35,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
       __NOP();
   }
 }
-
+*/
 /// @brief Function to convert encoder count to rpm
 /// @param encoderCount: 
 /// @param Pin_B: GPIO Pin for Output B of Encoder
