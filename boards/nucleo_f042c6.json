@@ -3,10 +3,10 @@
     "cpu": "cortex-m0",
     "extra_flags": "-DSTM32F042x6",
     "f_cpu": "48000000L",
-    "mcu": "stm32f042c4t6",
+    "mcu": "stm32f042c6t6",
     "product_line": "STM32F042x6",
     "variant": "STM32F0xx/F042C(4-6)T",
-    "ldscript": "STM32F042C4TX_FLASH.ld"
+    "ldscript": "STM32F042C6TX_FLASH.ld"
   },
   "connectivity": [
     "can"
@@ -15,7 +15,7 @@
     "default_tools": [
       "stlink"
     ],
-    "jlink_device": "STM32F042C4",
+    "jlink_device": "STM32F042C6",
     "onboard_tools": [
       "stlink"
     ],
@@ -29,10 +29,10 @@
     "stm32cube",
     "libopencm3"
   ],
-  "name": "ST Nucleo F042C4",
+  "name": "ST Nucleo F042C6",
   "upload": {
     "maximum_ram_size": 6144,
-    "maximum_size": 16384,
+    "maximum_size": 32768,
     "protocol": "stlink",
     "protocols": [
       "jlink",
@@ -42,6 +42,6 @@
       "mbed"
     ]
   },
-  "url": "https://www.st.com/en/microcontrollers-microprocessors/stm32f042c4.html",
+  "url": "https://www.st.com/en/microcontrollers-microprocessors/stm32f042c6.html",
   "vendor": "ST"
 }

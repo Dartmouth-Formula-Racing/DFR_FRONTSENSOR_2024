@@ -32,6 +32,8 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define INTERVAL_MS 100
+#define DIRECTION 1
+#define ADC_MAX 4095
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -101,25 +103,26 @@ int main(void)
   /* USER CODE BEGIN 2 */
   ////////////////// Variables //////////////////
   //Uitlity
-  uint32_t lastTimeCount = HAL_GetTick();
-  uint8_t adcCounter = 0;
+  volatile uint32_t lastTimeCount = HAL_GetTick();
+  volatile uint8_t adcCounter = 0;
 
   //Right Wheel Encoder
-  uint16_t rightEncoderCount;
+  volatile uint16_t rightEncoderCount = 0;
   volatile uint16_t rightRpm;
 
   //Left Wheel Encoder
-  uint16_t leftEncoderCount;
+  volatile uint16_t leftEncoderCount = 0;
   volatile uint16_t leftRpm;
 
   //Brake Pressure
-  uint8_t brakeBoolean;
+  volatile uint8_t brakeBoolean;
 
   //Steering Angle
-  uint8_t steeringPercent;
+  volatile uint16_t steeringReading;
+  volatile int8_t steering8Bit;
 
   //Throttle Position
-  uint8_t throttlePercent;
+  volatile uint16_t throttleReading;
 
   /* USER CODE END 2 */
 
@@ -134,24 +137,46 @@ int main(void)
       // Encoders
       rightRpm = encoderToRpm(rightEncoderCount, INTERVAL_MS);
       leftRpm = encoderToRpm(leftEncoderCount, INTERVAL_MS);
-      /*
+      
       // Brake Pressure Switch
       brakeBoolean = pollBrake();
-
+      
       // Potentiometers
       correctAdcChannel(adcCounter, &hadc);
-      steeringPercent = pollPotentiometer(&hadc);
+      steeringReading = pollPotentiometer(&hadc);
+      steering8Bit = (steeringReading / ADC_MAX * 255) - 128;
       adcCounter = !adcCounter;
-      throttlePercent = pollPotentiometer(&hadc);
+      throttleReading = pollPotentiometer(&hadc);
       adcCounter = !adcCounter;
 
       //////////// Send Data ////////////
-      // Prepare CAN message
+      // Declare CAN message
       CAN_TxHeaderTypeDef TxHeader;
-      uint8_t TxData[8];
+      uint8_t TxData[8] = {0};
       uint32_t TxMailbox;
+
+      ///// Assign CAN Packet
+      // 1st and 2nd Bytes: Right Wheel RPM
+      TxData[0] = (uint8_t)(rightRpm & 0x00FF);
+      TxData[1] = (uint8_t)((rightRpm & 0xFF00) >> 8);
+
+      // 3rd and 4th Bytes: Left Wheel RPM
+      TxData[2] = (uint8_t)(leftRpm & 0x00FF);
+      TxData[3] = (uint8_t)((leftRpm & 0xFF00) >> 8);
+
+      // 5rd Byte: Brake Pressure
+      TxData[4] = brakeBoolean;
+
+      // 6th Byte: Steering Angle
+      TxData[5] = steering8Bit;
+
+      // 7th and 8th Bytes: Throttle Position
+      TxData[6] = (uint8_t)(throttleReading & 0x00FF);
+      TxData[7] = (uint8_t)((throttleReading & 0xFF00) >> 8);
+
       //Send over CAN
-      */
+      HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox);
+      
 
       lastTimeCount = HAL_GetTick();
     }
@@ -160,6 +185,34 @@ int main(void)
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
+}
+
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if(GPIO_Pin == GPIO_PIN_5) { // GPIO_PIN_5 =  AR Right Wheel
+
+    if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == GPIO_PIN_SET) { // PA6 = BR Right Wheel
+      //Increment encoder count
+      rightEncoderCount += DIRECTION;
+    } else {
+      //Decrement encoder count
+      rightEncoderCount -= DIRECTION;
+  }
+
+  } else if(GPIO_Pin == GPIO_PIN_13) { // GPIO_PIN_13 = AL Left Wheel
+    
+    if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14) == GPIO_PIN_SET) { // PB14 = BL Left Wheel
+      //Increment encoder count
+      leftEncoderCount += DIRECTION;
+    } else {
+      //Decrement encoder count
+      leftEncoderCount -= DIRECTION;
+    }
+
+  } else {
+      __NOP();
+  }
 }
 
 /**

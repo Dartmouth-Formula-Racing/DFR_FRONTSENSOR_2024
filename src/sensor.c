@@ -23,16 +23,24 @@ uint8_t pollBrake(void) {
   return brakeStatus;
 }
 
+// Polls the potentiometers
 uint16_t pollPotentiometer(CAN_HandleTypeDef *hadc) {
   uint16_t adcValue = 0;
-  HAL_ADC_Start(&hadc);
-  if (HAL_ADC_PollForConversion(&hadc, 1000) == HAL_OK) {
-    adcValue = HAL_ADC_GetValue(&hadc);
+  HAL_ADC_Start(hadc);
+  if (HAL_ADC_PollForConversion(hadc, 1000) == HAL_OK) {
+    adcValue = HAL_ADC_GetValue(hadc);
   }
-  HAL_ADC_Stop(&hadc);
-  return adcValue / 4095 * 100;
+  HAL_ADC_Stop(hadc);
+  return adcValue;
 }
 
+// Converts Encoder Count to RPM
+uint16_t encoderToRpm(uint16_t encoderCount, uint16_t interval) {
+  uint16_t rpm = 0;
+  //Calculate RPM
+  rpm = (encoderCount * 60 * 1000) / (ENCODER_COUNT_PER_REV * interval);
+  return rpm;
+}
 
 /*----------------------------------------------------------------------------*/
 /*  Utility Functions                                                         */
@@ -48,4 +56,4 @@ void correctAdcChannel(uint8_t adcChannel, CAN_HandleTypeDef *hadc) {
       }
       HAL_ADC_Stop(&hadc);
   }
-} 
+}
